@@ -16,6 +16,12 @@ var (
 func main() {
 
 	configs.ConnectDB()
+	db := configs.GetDB()
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	defer sqlDB.Close()
 
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
