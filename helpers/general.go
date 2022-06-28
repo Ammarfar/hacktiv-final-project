@@ -15,3 +15,9 @@ func GetEnv(param string) string {
 
 	return os.Getenv(param)
 }
+
+func PanicIfError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

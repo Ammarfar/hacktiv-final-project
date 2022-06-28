@@ -23,9 +23,7 @@ var (
 func ConnectDB() {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s", host, user, pass, name, port, timeZone)
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	helpers.PanicIfError(err)
 
 	db.AutoMigrate(
 		&models.User{},
