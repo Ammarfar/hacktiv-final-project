@@ -27,7 +27,12 @@ func ConnectDB() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(
+		&models.User{},
+		&models.Photo{},
+		&models.Comment{},
+		&models.SocialMedia{},
+	)
 }
 
 func GetDB() *gorm.DB {
