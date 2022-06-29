@@ -1,9 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
 type SocialMedia struct {
-	gorm.Model
+	Common
 	Name           string
 	SocialMediaUrl string
 	UserID         uint

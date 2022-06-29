@@ -1,9 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
 type Photo struct {
-	gorm.Model
+	Common
 	Title    string
 	Caption  string
 	PhotoUrl string

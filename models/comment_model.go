@@ -1,9 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
 type Comment struct {
-	gorm.Model
+	Common
 	UserID  uint
 	PhotoID uint
 	Message string
