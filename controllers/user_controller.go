@@ -3,6 +3,7 @@ package controllers
 import (
 	"finalproject/helpers"
 	"finalproject/models"
+	"finalproject/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,27 +15,27 @@ type UserController interface {
 }
 
 type userControllerImpl struct {
-	user     *models.User
-	db       *gorm.DB
+	model    *models.User
+	service  services.UserService
 	response helpers.Response
 }
 
 func NewUserController(db *gorm.DB, response helpers.Response) UserController {
 	return &userControllerImpl{
-		user:     &models.User{},
-		db:       db,
+		model:    &models.User{},
+		service:  services.NewUserService(db),
 		response: response,
 	}
 }
 
-func (this *userControllerImpl) Register(c *gin.Context) {
-	helpers.Binding(c, this.user)
+func (uc *userControllerImpl) Register(c *gin.Context) {
+	helpers.Binding(c, uc.model)
 
-	if err := this.db.Debug().Create(&this.user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, this.response.Error(err.Error()))
+	user, err := uc.service.Register(*uc.model)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, uc.response.Error(err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, this.response.SuccessWithData("User Created Successfully", &this.user.Username))
-	return
+	c.JSON(http.StatusOK, uc.response.SuccessWithData("User Created Successfully", user.Username))
 }
