@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -19,5 +20,14 @@ func GetEnv(param string) string {
 func PanicIfError(err error) {
 	if err != nil {
 		panic(err)
+	}
+}
+
+func Binding(c *gin.Context, obj any) {
+	contentType := c.Request.Header.Get("Content-Type")
+	if contentType == "application/json" {
+		c.ShouldBindJSON(obj)
+	} else {
+		c.ShouldBind(obj)
 	}
 }

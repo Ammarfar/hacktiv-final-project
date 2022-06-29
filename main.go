@@ -2,6 +2,7 @@ package main
 
 import (
 	"finalproject/configs"
+	"finalproject/controllers"
 	"finalproject/helpers"
 	"net/http"
 
@@ -9,8 +10,9 @@ import (
 )
 
 var (
-	host = helpers.GetEnv("APP_HOST")
-	port = helpers.GetEnv("APP_PORT")
+	host     = helpers.GetEnv("APP_HOST")
+	port     = helpers.GetEnv("APP_PORT")
+	response = helpers.NewResponse()
 )
 
 func main() {
@@ -27,6 +29,12 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	userController := controllers.NewUserController(db, response)
+	users := r.Group("/users")
+	{
+		users.POST("/register", userController.Register)
+	}
 
 	r.Run(host + ":" + port)
 }
