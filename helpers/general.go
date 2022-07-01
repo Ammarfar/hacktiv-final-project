@@ -23,11 +23,13 @@ func PanicIfError(err error) {
 	}
 }
 
-func Binding(c *gin.Context, obj any) {
+func Binding(c *gin.Context, obj any) (err error) {
 	contentType := c.Request.Header.Get("Content-Type")
 	if contentType == "application/json" {
-		c.ShouldBindJSON(obj)
+		err = c.ShouldBindJSON(obj)
 	} else {
-		c.ShouldBind(obj)
+		err = c.ShouldBind(obj)
 	}
+
+	return err
 }

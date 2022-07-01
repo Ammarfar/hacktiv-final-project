@@ -28,7 +28,10 @@ func NewUserController(db *gorm.DB, response helpers.Response) UserController {
 
 func (uc *userControllerImpl) Register(c *gin.Context) {
 	var user models.User
-	helpers.Binding(c, &user)
+	if err := helpers.Binding(c, &user); err != nil {
+		c.JSON(http.StatusBadRequest, uc.response.Error(err.Error()))
+		return
+	}
 
 	if err := uc.service.Register(user); err != nil {
 		c.JSON(http.StatusBadRequest, uc.response.Error(err.Error()))
