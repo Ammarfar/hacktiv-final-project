@@ -7,7 +7,8 @@ import (
 )
 
 type UserRepository interface {
-	Register(user models.User) (*models.User, error)
+	Register(user models.User) error
+	IsUserExist(user models.User) bool
 }
 
 type userRepositoryImpl struct {
@@ -20,11 +21,10 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-func (ur *userRepositoryImpl) Register(user models.User) (*models.User, error) {
+func (ur *userRepositoryImpl) Register(user models.User) error {
+	return ur.db.Create(&user).Error
+}
 
-	if err := ur.db.Debug().Create(&user).Error; err != nil {
-		return nil, err
-	}
-
-	return &user, nil
+func (ur *userRepositoryImpl) IsUserExist(user models.User) bool {
+	return ur.db.Where("username = ?", user.Username).Or("email = ?", user.Email).First(&user).Error == nil
 }

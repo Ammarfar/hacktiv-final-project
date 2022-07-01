@@ -15,24 +15,22 @@ type UserController interface {
 }
 
 type userControllerImpl struct {
-	model    *models.User
 	service  services.UserService
 	response helpers.Response
 }
 
 func NewUserController(db *gorm.DB, response helpers.Response) UserController {
 	return &userControllerImpl{
-		model:    &models.User{},
 		service:  services.NewUserService(db),
 		response: response,
 	}
 }
 
 func (uc *userControllerImpl) Register(c *gin.Context) {
-	helpers.Binding(c, uc.model)
+	var user models.User
+	helpers.Binding(c, &user)
 
-	user, err := uc.service.Register(*uc.model)
-	if err != nil {
+	if err := uc.service.Register(user); err != nil {
 		c.JSON(http.StatusBadRequest, uc.response.Error(err.Error()))
 		return
 	}

@@ -18,31 +18,22 @@ type User struct {
 	SocialMedias []SocialMedia `json:"social_medias"`
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
-
-	var checkDuplicate *User
-	if tx.Where("username = ?", u.Username).Or("email = ?", u.Email).First(&checkDuplicate).Error == nil {
-		err = errors.New("Username or Email has been registered")
-		return
-	}
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	var err error
 
 	if u.Age < 9 {
-		err = errors.New("Age must be greater than 8")
-		return
+		return errors.New("age must be greater than 8")
 	}
 
-	_, errCreate := govalidator.ValidateStruct(u)
-
-	if errCreate != nil {
-		err = errCreate
-		return
+	_, err = govalidator.ValidateStruct(u)
+	if err != nil {
+		return err
 	}
 
 	u.Password, err = helpers.HashPass(u.Password)
 	if err != nil {
-		return
+		return err
 	}
 
-	err = nil
-	return
+	return nil
 }

@@ -3,12 +3,13 @@ package services
 import (
 	"finalproject/models"
 	"finalproject/repositories"
+	"fmt"
 
 	"gorm.io/gorm"
 )
 
 type UserService interface {
-	Register(user models.User) (*models.User, error)
+	Register(user models.User) error
 }
 
 type userServiceImpl struct {
@@ -21,13 +22,10 @@ func NewUserService(db *gorm.DB) UserService {
 	}
 }
 
-func (us *userServiceImpl) Register(request models.User) (*models.User, error) {
-
-	user, err := us.repository.Register(request)
-
-	if err != nil {
-		return nil, err
+func (us *userServiceImpl) Register(request models.User) error {
+	if us.repository.IsUserExist(request) {
+		return fmt.Errorf("username %s or email %s has been registered", request.Username, request.Email)
 	}
 
-	return user, nil
+	return us.repository.Register(request)
 }
