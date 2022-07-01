@@ -41,7 +41,12 @@ func (uc *userControllerImpl) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, uc.response.SuccessWithData("User Created Successfully", user.Username))
+	c.JSON(http.StatusOK, uc.response.SuccessWithData("User Created Successfully", helpers.ResponseObj{
+		"age":     user.Age,
+		"email":   user.Email,
+		"id":      user.ID,
+		"usernam": user.Username,
+	}))
 }
 
 func (uc *userControllerImpl) Login(c *gin.Context) {
