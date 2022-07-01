@@ -34,6 +34,7 @@ func main() {
 	users := r.Group("/users")
 	{
 		users.POST("/register", userController.Register)
+		users.POST("/login", userController.Login)
 	}
 
 	r.Run(host + ":" + port)

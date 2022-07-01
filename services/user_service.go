@@ -1,8 +1,11 @@
 package services
 
 import (
+	"errors"
+	"finalproject/helpers"
 	"finalproject/models"
 	"finalproject/repositories"
+	"finalproject/requests"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -10,6 +13,7 @@ import (
 
 type UserService interface {
 	Register(user models.User) error
+	Login(request requests.LoginRequest) (string, error)
 }
 
 type userServiceImpl struct {
@@ -28,4 +32,22 @@ func (us *userServiceImpl) Register(request models.User) error {
 	}
 
 	return us.repository.Register(request)
+}
+
+func (us *userServiceImpl) Login(request requests.LoginRequest) (string, error) {
+	user, err := us.repository.GetUserByEmail(request)
+	if err != nil {
+		return "", errors.New("wrong username or password")
+	}
+
+	if success := helpers.ComparePass(user.Password, request.Password); !success {
+		return "", errors.New("wrong username or password")
+	}
+
+	token, errToken := user.GenerateToken()
+	if errToken != nil {
+		return "", errors.New("failed generating token")
+	}
+
+	return token, nil
 }

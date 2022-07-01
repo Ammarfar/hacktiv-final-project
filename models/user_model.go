@@ -5,6 +5,7 @@ import (
 	"finalproject/helpers"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 )
 
@@ -36,4 +37,17 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	}
 
 	return nil
+}
+
+func (u *User) GenerateToken() (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id": u.ID,
+	})
+
+	tokenString, err := token.SignedString([]byte(helpers.GetEnv("JWT_SECRET_KEY")))
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
