@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetUserByEmail(request requests.LoginRequest) (*models.User, error)
 	Update(request requests.UserUpdateRequest) (*models.User, error)
 	IsEmailExist(request requests.UserUpdateRequest) (bool, error)
+	Delete(id int) error
 }
 
 type userRepositoryImpl struct {
@@ -67,4 +68,8 @@ func (ur *userRepositoryImpl) IsEmailExist(request requests.UserUpdateRequest) (
 	}
 
 	return true, nil
+}
+
+func (ur *userRepositoryImpl) Delete(id int) error {
+	return ur.db.Delete(&models.User{}, id).Error
 }

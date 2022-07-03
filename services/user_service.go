@@ -15,6 +15,7 @@ type UserService interface {
 	Register(user models.User) error
 	Login(request requests.LoginRequest) (string, error)
 	Update(request requests.UserUpdateRequest) (*models.User, error)
+	Delete(id int) error
 }
 
 type userServiceImpl struct {
@@ -67,4 +68,8 @@ func (us *userServiceImpl) Update(request requests.UserUpdateRequest) (*models.U
 	}
 
 	return user, nil
+}
+
+func (us *userServiceImpl) Delete(id int) error {
+	return us.repository.Delete(id)
 }

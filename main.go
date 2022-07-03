@@ -37,6 +37,7 @@ func main() {
 		users.POST("/register", userController.Register)
 		users.POST("/login", userController.Login)
 		users.PUT("/:userId", middlewares.VerifyToken, middlewares.IsMatchUser, userController.UpdateUser)
+		users.DELETE("/", middlewares.VerifyToken, userController.Delete)
 	}
 
 	r.Run(host + ":" + port)

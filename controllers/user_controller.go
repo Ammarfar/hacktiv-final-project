@@ -16,6 +16,7 @@ type UserController interface {
 	Register(c *gin.Context)
 	Login(c *gin.Context)
 	UpdateUser(c *gin.Context)
+	Delete(c *gin.Context)
 }
 
 type userControllerImpl struct {
@@ -103,4 +104,19 @@ func (uc *userControllerImpl) UpdateUser(c *gin.Context) {
 		"age":        user.Age,
 		"updated_at": user.UpdatedAt.Format("02 Jan 06 15:04"),
 	}))
+}
+
+func (uc *userControllerImpl) Delete(c *gin.Context) {
+	id, exist := c.Get("id")
+	if !exist {
+		c.JSON(http.StatusUnauthorized, uc.response.Error("Unauthorized"))
+		return
+	}
+
+	if err := uc.service.Delete(int(id.(float64))); err != nil {
+		c.JSON(http.StatusInternalServerError, uc.response.Error(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, uc.response.Success("Your account has been successfully deleted"))
 }
