@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"finalproject/configs"
 	"finalproject/helpers"
 	"finalproject/models"
 	"finalproject/requests"
@@ -43,7 +44,7 @@ func (uc *userControllerImpl) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, uc.response.SuccessWithData("User Created Successfully", helpers.ResponseObj{
+	c.JSON(http.StatusCreated, uc.response.SuccessWithData("User Created Successfully", configs.ResponseObj{
 		"age":     user.Age,
 		"email":   user.Email,
 		"id":      user.ID,
@@ -69,7 +70,7 @@ func (uc *userControllerImpl) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, uc.response.SuccessWithData("Login Success", helpers.ResponseObj{"token": token}))
+	c.JSON(http.StatusOK, uc.response.SuccessWithData("Login Success", configs.ResponseObj{"token": token}))
 }
 
 func (uc *userControllerImpl) UpdateUser(c *gin.Context) {
@@ -97,12 +98,12 @@ func (uc *userControllerImpl) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, uc.response.SuccessWithData("User Updated Successfully", helpers.ResponseObj{
+	c.JSON(http.StatusOK, uc.response.SuccessWithData("User Updated Successfully", configs.ResponseObj{
 		"id":         user.ID,
 		"email":      user.Email,
 		"username":   user.Username,
 		"age":        user.Age,
-		"updated_at": user.UpdatedAt.Format("02 Jan 06 15:04"),
+		"updated_at": user.UpdatedAt.Format(configs.TimeFormat),
 	}))
 }
 

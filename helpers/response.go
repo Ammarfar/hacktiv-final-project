@@ -1,7 +1,5 @@
 package helpers
 
-type ResponseObj map[string]interface{}
-
 type Response interface {
 	SuccessWithData(string, interface{}) *response
 	Success(string) *response
