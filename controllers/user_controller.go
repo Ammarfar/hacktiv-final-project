@@ -15,6 +15,7 @@ import (
 type UserController interface {
 	Register(c *gin.Context)
 	Login(c *gin.Context)
+	UpdateUser(c *gin.Context)
 }
 
 type userControllerImpl struct {
@@ -68,4 +69,38 @@ func (uc *userControllerImpl) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, uc.response.SuccessWithData("Login Success", helpers.ResponseObj{"token": token}))
+}
+
+func (uc *userControllerImpl) UpdateUser(c *gin.Context) {
+	id, exist := c.Get("id")
+	if !exist {
+		c.JSON(http.StatusUnauthorized, uc.response.Error("Unauthorized"))
+		return
+	}
+
+	var request requests.UserUpdateRequest
+	if err := helpers.Binding(c, &request); err != nil {
+		c.JSON(http.StatusBadRequest, uc.response.Error(err.Error()))
+		return
+	}
+
+	if isValid, err := govalidator.ValidateStruct(request); !isValid {
+		c.JSON(http.StatusBadRequest, uc.response.Error(err.Error()))
+		return
+	}
+
+	request.ID = int(id.(float64))
+	user, err := uc.service.Update(request)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, uc.response.Error(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, uc.response.SuccessWithData("User Updated Successfully", helpers.ResponseObj{
+		"id":         user.ID,
+		"email":      user.Email,
+		"username":   user.Username,
+		"age":        user.Age,
+		"updated_at": user.UpdatedAt.Format("02 Jan 06 15:04"),
+	}))
 }

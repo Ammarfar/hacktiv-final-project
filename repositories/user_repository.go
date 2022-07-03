@@ -11,6 +11,8 @@ type UserRepository interface {
 	Register(user models.User) error
 	IsUserExist(user models.User) bool
 	GetUserByEmail(request requests.LoginRequest) (*models.User, error)
+	Update(request requests.UserUpdateRequest) (*models.User, error)
+	IsEmailExist(request requests.UserUpdateRequest) (bool, error)
 }
 
 type userRepositoryImpl struct {
@@ -38,4 +40,31 @@ func (ur *userRepositoryImpl) GetUserByEmail(request requests.LoginRequest) (*mo
 	}
 
 	return &user, nil
+}
+
+func (ur *userRepositoryImpl) Update(request requests.UserUpdateRequest) (*models.User, error) {
+	var user models.User
+
+	if err := ur.db.Where("id = ?", request.ID).Take(&user).Error; err != nil {
+		return nil, err
+	}
+
+	user.Username = request.Username
+	user.Email = request.Email
+
+	if err := ur.db.Save(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (ur *userRepositoryImpl) IsEmailExist(request requests.UserUpdateRequest) (bool, error) {
+	var user models.User
+
+	if err := ur.db.Where("email = ?", request.Email).Where("id != ?", request.ID).Take(&user).Error; err != nil {
+		return false, err
+	}
+
+	return true, nil
 }

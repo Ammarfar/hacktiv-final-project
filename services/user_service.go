@@ -14,6 +14,7 @@ import (
 type UserService interface {
 	Register(user models.User) error
 	Login(request requests.LoginRequest) (string, error)
+	Update(request requests.UserUpdateRequest) (*models.User, error)
 }
 
 type userServiceImpl struct {
@@ -50,4 +51,20 @@ func (us *userServiceImpl) Login(request requests.LoginRequest) (string, error) 
 	}
 
 	return token, nil
+}
+
+func (us *userServiceImpl) Update(request requests.UserUpdateRequest) (*models.User, error) {
+	if isExist, err := us.repository.IsEmailExist(request); isExist {
+		if err != nil {
+			return nil, err
+		}
+		return nil, errors.New("email already exist")
+	}
+
+	user, err := us.repository.Update(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

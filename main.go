@@ -4,6 +4,7 @@ import (
 	"finalproject/configs"
 	"finalproject/controllers"
 	"finalproject/helpers"
+	"finalproject/middlewares"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,7 @@ func main() {
 	{
 		users.POST("/register", userController.Register)
 		users.POST("/login", userController.Login)
+		users.PUT("/:userId", middlewares.VerifyToken, middlewares.IsMatchUser, userController.UpdateUser)
 	}
 
 	r.Run(host + ":" + port)
