@@ -12,5 +12,7 @@ func PhotoRoute(r *gin.Engine, controller controllers.PhotoController) {
 	{
 		photos.POST("/", controller.Create)
 		photos.GET("/", controller.List)
+		photos.PUT("/:photoId", controller.Update)
+		photos.DELETE("/:photoId", controller.Delete)
 	}
 }
