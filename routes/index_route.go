@@ -12,4 +12,5 @@ func Index(r *gin.Engine, db *gorm.DB) {
 	response := helpers.NewResponse()
 
 	UserRoute(r, controllers.NewUserController(db, response))
+	PhotoRoute(r, controllers.NewPhotoController(db, response))
 }
