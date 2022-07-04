@@ -13,6 +13,7 @@ import (
 
 type PhotoController interface {
 	Create(c *gin.Context)
+	List(c *gin.Context)
 }
 
 type photoControllerImpl struct {
@@ -54,4 +55,20 @@ func (pc *photoControllerImpl) Create(c *gin.Context) {
 		"user_id":    photo.UserID,
 		"created_at": photo.CreatedAt.Format(configs.TimeFormat),
 	}))
+}
+
+func (pc *photoControllerImpl) List(c *gin.Context) {
+	id, exist := c.Get("id")
+	if !exist {
+		c.JSON(http.StatusUnauthorized, pc.response.Error("Unauthorized"))
+		return
+	}
+
+	photos, err := pc.service.List(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, pc.response.Error(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, pc.response.SuccessWithData("Success retrieving data", photos))
 }

@@ -9,6 +9,7 @@ import (
 
 type PhotoService interface {
 	Create(request models.Photo) error
+	List(userId any) ([]models.Photo, error)
 }
 
 type photoServiceImpl struct {
@@ -23,4 +24,8 @@ func NewPhotoService(db *gorm.DB) PhotoService {
 
 func (pc *photoServiceImpl) Create(request models.Photo) error {
 	return pc.repository.Create(request)
+}
+
+func (pc *photoServiceImpl) List(userId any) ([]models.Photo, error) {
+	return pc.repository.List(userId)
 }
