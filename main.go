@@ -20,11 +20,10 @@ func main() {
 	// declaration
 	host := helpers.GetEnv("APP_HOST")
 	port := helpers.GetEnv("APP_PORT")
-	response := helpers.NewResponse()
 	server := gin.Default()
 
 	// routes
-	routes.Index(server, db, response)
+	routes.Index(server, db)
 
 	server.Run(host + ":" + port)
 }

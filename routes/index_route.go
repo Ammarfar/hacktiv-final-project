@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func Index(r *gin.Engine, db *gorm.DB, response helpers.Response) {
+func Index(r *gin.Engine, db *gorm.DB) {
+	response := helpers.NewResponse()
+
 	UserRoute(r, controllers.NewUserController(db, response))
 }
