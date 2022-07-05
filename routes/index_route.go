@@ -14,4 +14,5 @@ func Index(r *gin.Engine, db *gorm.DB) {
 	UserRoute(r, controllers.NewUserController(db, response))
 	PhotoRoute(r, controllers.NewPhotoController(db, response))
 	CommentRoute(r, controllers.NewCommentController(db, response))
+	SocialMediaRoute(r, controllers.NewSocialMediaController(db, response))
 }
